@@ -1,4 +1,4 @@
-name: Privisas GSC Read Test
+name: Privisas GSC Module Test
 
 on:
   workflow_dispatch:
@@ -8,7 +8,7 @@ permissions:
   id-token: write
 
 jobs:
-  read-gsc:
+  test-gsc-module:
     runs-on: ubuntu-latest
 
     steps:
@@ -16,90 +16,33 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Authenticate to Google Cloud
-        id: auth
         uses: google-github-actions/auth@v3
         with:
           workload_identity_provider: projects/153968183926/locations/global/workloadIdentityPools/github-actions/providers/github-actions
           service_account: privisas-seo-agent@privisas-seo-agent.iam.gserviceaccount.com
           create_credentials_file: true
 
-      - name: Install Google authentication library
+      - name: Install dependencies
         run: |
-          python -m pip install --quiet google-auth
+          python -m pip install --quiet google-auth google-api-python-client python-dotenv
 
-      - name: Read Search Console queries
-        shell: bash
+      - name: Test Privisas GSC module
         run: |
           python - <<'PY'
-          import json
-          import urllib.parse
-          import urllib.request
-          from datetime import date, timedelta
+          from data_sources.modules.google_search_console import GoogleSearchConsole
 
-          import google.auth
-          from google.auth.transport.requests import Request
+          gsc = GoogleSearchConsole()
 
-          SITE_URL = "sc-domain:privisas.com"
-          SCOPE = "https://www.googleapis.com/auth/webmasters.readonly"
+          rows = gsc.get_keyword_positions(days=28, limit=10)
 
-          credentials, project_id = google.auth.default(
-              scopes=[SCOPE]
-          )
-          credentials.refresh(Request())
+          print("✅ Privisas GSC module works")
+          print("----------------------------")
 
-          end_date = date.today() - timedelta(days=3)
-          start_date = end_date - timedelta(days=27)
-
-          encoded_site = urllib.parse.quote(SITE_URL, safe="")
-          url = (
-              "https://www.googleapis.com/webmasters/v3/sites/"
-              f"{encoded_site}/searchAnalytics/query"
-          )
-
-          body = {
-              "startDate": start_date.isoformat(),
-              "endDate": end_date.isoformat(),
-              "dimensions": ["query"],
-              "rowLimit": 10
-          }
-
-          request = urllib.request.Request(
-              url,
-              data=json.dumps(body).encode("utf-8"),
-              headers={
-                  "Authorization": f"Bearer {credentials.token}",
-                  "Content-Type": "application/json"
-              },
-              method="POST"
-          )
-
-          with urllib.request.urlopen(request) as response:
-              data = json.load(response)
-
-          print("✅ Google authentication successful")
-          print("✅ Search Console API read successful")
-          print(f"Period: {start_date} -> {end_date}")
-          print("")
-          print("TOP PRIVISAS QUERIES")
-          print("--------------------")
-
-          rows = data.get("rows", [])
-
-          if not rows:
-              print("No query rows returned for this period.")
-          else:
-              for row in rows:
-                  query = row["keys"][0]
-                  clicks = row.get("clicks", 0)
-                  impressions = row.get("impressions", 0)
-                  ctr = row.get("ctr", 0) * 100
-                  position = row.get("position", 0)
-
-                  print(
-                      f"{query} | "
-                      f"clicks={clicks:.0f} | "
-                      f"impressions={impressions:.0f} | "
-                      f"CTR={ctr:.2f}% | "
-                      f"position={position:.2f}"
-                  )
+          for row in rows:
+              print(
+                  f"{row['keyword']} | "
+                  f"clicks={row['clicks']} | "
+                  f"impressions={row['impressions']} | "
+                  f"position={row['position']}"
+              )
           PY
