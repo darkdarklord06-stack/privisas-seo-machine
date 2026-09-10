@@ -8,35 +8,34 @@ import os
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Any
 from googleapiclient.discovery import build
-from google.oauth2 import service_account
+import google.auth
 
 class GoogleSearchConsole:
     """Google Search Console data fetcher"""
 
     def __init__(self, site_url: Optional[str] = None, credentials_path: Optional[str] = None):
         """
-        Initialize GSC client
+        Initialize GSC client using Google Application Default Credentials (ADC).
+
+        GitHub Actions authenticates through Workload Identity Federation, so no
+        long-lived service account JSON key is required.
 
         Args:
-            site_url: Site URL (e.g., "https://castos.com")
-            credentials_path: Path to credentials JSON
+            site_url: Search Console property (default: "sc-domain:privisas.com")
+            credentials_path: Legacy argument kept for compatibility; not used.
         """
-        self.site_url = site_url or os.getenv('GSC_SITE_URL')
-        credentials_path = credentials_path or os.getenv('GSC_CREDENTIALS_PATH')
+        self.site_url = site_url or os.getenv('GSC_SITE_URL') or 'sc-domain:privisas.com'
 
-        if not self.site_url:
-            raise ValueError("GSC_SITE_URL must be provided or set in environment")
-
-        if not credentials_path or not os.path.exists(credentials_path):
-            raise ValueError(f"Credentials file not found: {credentials_path}")
-
-        # Initialize client
-        credentials = service_account.Credentials.from_service_account_file(
-            credentials_path,
+        credentials, _ = google.auth.default(
             scopes=['https://www.googleapis.com/auth/webmasters.readonly']
         )
 
-        self.service = build('searchconsole', 'v1', credentials=credentials)
+        self.service = build(
+            'searchconsole',
+            'v1',
+            credentials=credentials,
+            cache_discovery=False
+        )
 
     def get_keyword_positions(
         self,
