@@ -1,0 +1,28 @@
+name: Privisas GSC Connection Test
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  test-google-auth:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        id: auth
+        uses: google-github-actions/auth@v3
+        with:
+          workload_identity_provider: projects/153968183926/locations/global/workloadIdentityPools/github-actions/providers/github-actions
+          service_account: privisas-seo-agent@privisas-seo-agent.iam.gserviceaccount.com
+
+      - name: Confirm authentication
+        run: |
+          echo "Google authentication successful."
+          echo "Privisas SEO Agent is connected through Workload Identity Federation."
