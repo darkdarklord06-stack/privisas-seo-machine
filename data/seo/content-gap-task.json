@@ -1,6 +1,6 @@
 {
   "createdDate": "2026-09-11",
-  "status": "prepared_for_serp_research",
+  "status": "serp_researched",
   "keyword": "schengen vizesi için tur rezervasyonu yeterli mi",
   "targetPath": "/blog/schengen-vizesi-konaklama-kaniti-basvurunuzun-reddedilmemesi-icin-bilmeniz-gerekenler",
   "gsc": {
@@ -81,16 +81,45 @@
   },
   "serpResearch": {
     "required": true,
-    "results": [],
-    "note": "Google SERP must be researched through an approved search provider or web-search agent. Do not scrape Google search result pages directly."
+    "status": "completed",
+    "results": [
+      {
+        "title": "Regulation (EC) No 810/2009 — Visa Code",
+        "url": "https://eur-lex.europa.eu/eli/reg/2009/810/oj?locale=en",
+        "sourceType": "official",
+        "finding": "Organised-trip booking is listed as evidence relating to the itinerary, while accommodation evidence is listed separately. A tour booking therefore should not be presented as a universal substitute for all accommodation or other supporting-document requirements."
+      },
+      {
+        "title": "Yunanistan Vizesi 2026 | Evrak · Ücret · Randevu | MOSTTUR",
+        "url": "https://www.mosttur.com/vize/yunanistan",
+        "sourceType": "serp_competitor",
+        "finding": "Directly addresses tour + visa intent and states that buying a tour does not guarantee Schengen visa approval."
+      },
+      {
+        "title": "Otobüsle Avrupa Turu Vizesi 2026 Rehberi | Avrupa Rüyası",
+        "url": "https://www.avruparuyasi.com.tr/otobusle-avrupa-turu-vize-gerekir-mi",
+        "sourceType": "serp_competitor",
+        "finding": "Uses a direct answer around package-tour vouchers/programmes, showing that searchers are being served explicit yes/no guidance for tour-reservation queries."
+      }
+    ],
+    "note": "SERP review shows that the query expects a direct yes/no answer. Official Visa Code material distinguishes itinerary evidence from accommodation evidence."
   },
   "contentGap": {
-    "status": "not_analyzed",
-    "missingInformation": [],
-    "hypothesis": null
+    "status": "analyzed",
+    "missingInformation": [
+      "The page mentions organised-tour accommodation information but does not contain a dedicated heading that directly answers 'Schengen vizesi için tur rezervasyonu yeterli mi?'.",
+      "The page does not clearly distinguish a tour booking as itinerary evidence from country-specific accommodation and other supporting-document requirements."
+    ],
+    "hypothesis": "Adding one concise, direct-answer H2 section for the exact query will better satisfy search intent and may improve relevance/CTR/ranking for the tracked keyword.",
+    "proposedChange": {
+      "type": "single_content_section",
+      "insertAfterHeading": "Hangi Konaklama Belgeleri Kullanılabilir?",
+      "heading": "Schengen Vizesi İçin Tur Rezervasyonu Yeterli mi?",
+      "body": "Tek başına genellikle hayır. Organize tur rezervasyonu, seyahat planınızı ve güzergâhınızı gösteren destekleyici belgelerden biri olabilir. Tur belgesinde konaklama bilgileri açıkça yer alıyorsa konaklama kanıtını da destekleyebilir; ancak başvurduğunuz ülkenin güncel kontrol listesinde istenen diğer belgelerin yerine geçmez. Tur programında başvuru sahibinin adı, seyahat tarihleri, güzergâh ve dahil olan konaklamaların açıkça görünmesi önemlidir. Başvurudan önce ilgili konsolosluk veya yetkili başvuru merkezinin güncel belge listesini ayrıca kontrol edin."
+    }
   },
   "publishing": {
     "allowed": false,
-    "note": "No Framer change may be published until SERP and content-gap analysis is complete."
+    "note": "One change has been selected for the experiment. Do not publish automatically yet; apply through Framer preview first, then log the action and start the 7-day observation window."
   }
 }
