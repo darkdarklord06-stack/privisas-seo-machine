@@ -25,7 +25,7 @@ jobs:
       - name: Test Framer connection
         env:
           FRAMER_API_KEY: ${{ secrets.FRAMER_API_KEY }}
-          FRAMER_PROJECT_URL: ${{ vars.FRAMER_PROJECT_URL }}
+          FRAMER_PROJECT_URL: "https://framer.com/projects/privisas--IrajiSv3DxV6pCcGLk8v"
         run: |
           node --input-type=module <<'NODE'
           import { connect } from "framer-api"
