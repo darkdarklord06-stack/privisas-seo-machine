@@ -1,0 +1,97 @@
+name: Privisas Framer CMS Inspect
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  inspect-framer:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install Framer Server API
+        run: npm install framer-api
+
+      - name: Inspect Framer CMS
+        env:
+          FRAMER_API_KEY: ${{ secrets.FRAMER_API_KEY }}
+          FRAMER_PROJECT_URL: "https://framer.com/projects/privisas--IrajiSv3DxV6pCcGLk8v"
+        run: |
+          node --input-type=module <<'NODE'
+          import { connect } from "framer-api"
+
+          const targetSlug =
+            "schengen-vizesi-konaklama-kaniti-basvurunuzun-reddedilmemesi-icin-bilmeniz-gerekenler"
+
+          const framer = await connect(
+            process.env.FRAMER_PROJECT_URL,
+            process.env.FRAMER_API_KEY
+          )
+
+          try {
+            const collections = await framer.getCollections()
+
+            console.log(`Collections found: ${collections.length}`)
+
+            for (const collection of collections) {
+              console.log("")
+              console.log("COLLECTION")
+              console.log(`ID: ${collection.id}`)
+              console.log(`Name: ${collection.name ?? "(unknown)"}`)
+
+              const fields = await collection.getFields()
+              const items = await collection.getItems()
+
+              console.log(`Fields: ${fields.length}`)
+              console.log(`Items: ${items.length}`)
+
+              for (const field of fields) {
+                console.log(
+                  `FIELD | ${field.name} | id=${field.id} | type=${field.type}`
+                )
+              }
+
+              const target = items.find(
+                item => item.slug === targetSlug
+              )
+
+              if (target) {
+                console.log("")
+                console.log("✅ TARGET BLOG POST FOUND")
+                console.log(`Item ID: ${target.id}`)
+                console.log(`Slug: ${target.slug}`)
+                console.log(`Draft: ${target.draft}`)
+
+                for (const [fieldId, fieldValue] of Object.entries(target.fieldData)) {
+                  let value = fieldValue
+
+                  if (
+                    fieldValue &&
+                    typeof fieldValue === "object" &&
+                    "value" in fieldValue
+                  ) {
+                    value = fieldValue.value
+                  }
+
+                  let preview =
+                    typeof value === "string"
+                      ? value.slice(0, 500)
+                      : JSON.stringify(value).slice(0, 500)
+
+                  console.log(
+                    `VALUE | field=${fieldId} | ${preview}`
+                  )
+                }
+              }
+            }
+          } finally {
+            await framer.disconnect()
+          }
+          NODE
