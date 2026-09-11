@@ -35,6 +35,7 @@ jobs:
       - name: Run Privisas SEO Rank Watch
         env:
           GSC_SITE_URL: sc-domain:privisas.com
+          PYTHONPATH: .
         run: |
           python data_sources/seo_rank_watch.py
 
