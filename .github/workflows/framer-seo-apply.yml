@@ -1,0 +1,144 @@
+name: Privisas Framer SEO Apply
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  apply-seo-change:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install Framer Server API
+        run: npm install framer-api
+
+      - name: Apply SEO change without publishing
+        env:
+          FRAMER_API_KEY: ${{ secrets.FRAMER_API_KEY }}
+          FRAMER_PROJECT_URL: "https://framer.com/projects/privisas--IrajiSv3DxV6pCcGLk8v"
+        run: |
+          node --input-type=module <<'NODE'
+          import { connect } from "framer-api"
+
+          const TARGET_SLUG =
+            "schengen-vizesi-konaklama-kaniti-basvurunuzun-reddedilmemesi-icin-bilmeniz-gerekenler"
+
+          const CONTENT_FIELD_ID = "bETr4H1ad"
+
+          const INSERT_AFTER =
+            '<h2 dir="auto">Hangi Konaklama Belgeleri Kullanılabilir?</h2>'
+
+          const NEW_HEADING =
+            "Schengen Vizesi İçin Tur Rezervasyonu Yeterli mi?"
+
+          const NEW_SECTION = `
+          <h2 dir="auto">${NEW_HEADING}</h2>
+          <p dir="auto"><strong>Tek başına genellikle hayır.</strong> Organize tur rezervasyonu, seyahat planınızı ve güzergâhınızı gösteren destekleyici belgelerden biri olabilir. Tur belgesinde konaklama bilgileri açıkça yer alıyorsa konaklama kanıtını da destekleyebilir; ancak başvurduğunuz ülkenin güncel kontrol listesinde istenen diğer belgelerin yerine geçmez.</p>
+          <p dir="auto">Tur programında başvuru sahibinin adı, seyahat tarihleri, güzergâh ve dahil olan konaklamaların açıkça görünmesi önemlidir. Başvurudan önce ilgili konsolosluk veya yetkili başvuru merkezinin güncel belge listesini ayrıca kontrol edin.</p>
+          `.trim()
+
+          const framer = await connect(
+            process.env.FRAMER_PROJECT_URL,
+            process.env.FRAMER_API_KEY
+          )
+
+          try {
+            const collections = await framer.getCollections()
+
+            let target = null
+            let contentField = null
+
+            for (const collection of collections) {
+              const items = await collection.getItems()
+              const item = items.find(
+                item => item.slug === TARGET_SLUG
+              )
+
+              if (!item) continue
+
+              target = item
+
+              const fields = await collection.getFields()
+
+              contentField = fields.find(
+                field => field.id === CONTENT_FIELD_ID
+              )
+
+              break
+            }
+
+            if (!target) {
+              throw new Error("Target blog post not found.")
+            }
+
+            if (!contentField) {
+              throw new Error("Content field not found.")
+            }
+
+            if (contentField.type !== "formattedText") {
+              throw new Error(
+                `Unexpected content field type: ${contentField.type}`
+              )
+            }
+
+            const fieldValue = target.fieldData[CONTENT_FIELD_ID]
+
+            if (!fieldValue) {
+              throw new Error("Current article content is empty.")
+            }
+
+            const currentHtml = fieldValue.value
+
+            if (currentHtml.includes(NEW_HEADING)) {
+              console.log("SEO section already exists. No duplicate added.")
+              process.exit(0)
+            }
+
+            if (!currentHtml.includes(INSERT_AFTER)) {
+              throw new Error(
+                "Expected insertion heading was not found. No change made."
+              )
+            }
+
+            const insertionPoint =
+              currentHtml.indexOf(INSERT_AFTER) + INSERT_AFTER.length
+
+            const updatedHtml =
+              currentHtml.slice(0, insertionPoint) +
+              NEW_SECTION +
+              currentHtml.slice(insertionPoint)
+
+            await target.setAttributes({
+              fieldData: {
+                [CONTENT_FIELD_ID]: {
+                  type: "formattedText",
+                  value: updatedHtml,
+                  contentType: "html"
+                }
+              }
+            })
+
+            console.log("✅ SEO section added to Framer CMS")
+            console.log(`Item ID: ${target.id}`)
+            console.log(`Slug: ${target.slug}`)
+            console.log(`Heading: ${NEW_HEADING}`)
+            console.log("")
+            console.log("⚠️ NOT PUBLISHED")
+            console.log("The live Privisas website has not been changed.")
+
+            const changes = await framer.getChangedPaths()
+
+            console.log("")
+            console.log("Pending Framer changes:")
+            console.log(JSON.stringify(changes, null, 2))
+          } finally {
+            await framer.disconnect()
+          }
+          NODE
