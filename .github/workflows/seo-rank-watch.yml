@@ -3,9 +3,17 @@ name: Privisas SEO Rank Watch
 on:
   workflow_dispatch:
 
+  schedule:
+    # Her gün 09:00 Türkiye saati
+    - cron: "0 6 * * *"
+
 permissions:
   contents: write
   id-token: write
+
+concurrency:
+  group: privisas-seo-rank-watch
+  cancel-in-progress: false
 
 jobs:
   seo-rank-watch:
@@ -31,6 +39,13 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install google-auth google-api-python-client python-dotenv requests beautifulsoup4
+
+      - name: Review due SEO experiments
+        env:
+          GSC_SITE_URL: sc-domain:privisas.com
+          PYTHONPATH: .
+        run: |
+          python data_sources/seo_review.py
 
       - name: Run Privisas SEO Rank Watch
         env:
