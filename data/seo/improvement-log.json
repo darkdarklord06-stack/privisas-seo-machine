@@ -1,1 +1,29 @@
-[]
+[
+  {
+    "keyword": "schengen vizesi için tur rezervasyonu yeterli mi",
+    "targetPath": "/blog/schengen-vizesi-konaklama-kaniti-basvurunuzun-reddedilmemesi-icin-bilmeniz-gerekenler",
+    "status": "observing",
+    "actionDate": "2026-09-11",
+    "nextReviewDate": "2026-09-18",
+    "rankAtAction": 6.88,
+    "impressionsAtAction": 8,
+    "clicksAtAction": 0,
+    "searchIntent": {
+      "type": "informational_decision",
+      "searcher": "Vize başvurusu hazırlayan ve belirli bir belgenin başvuru için yeterli olup olmadığını kontrol eden kullanıcı.",
+      "goal": "Belgenin tek başına yeterli olup olmadığını ve gerekiyorsa hangi ek belgelerin hazırlanması gerektiğini öğrenmek."
+    },
+    "contentGap": [
+      "The page mentions organised-tour accommodation information but does not contain a dedicated heading that directly answers 'Schengen vizesi için tur rezervasyonu yeterli mi?'.",
+      "The page does not clearly distinguish a tour booking as itinerary evidence from country-specific accommodation and other supporting-document requirements."
+    ],
+    "hypothesis": "Adding one concise, direct-answer H2 section for the exact query will better satisfy search intent and may improve relevance/CTR/ranking for the tracked keyword.",
+    "actions": [
+      {
+        "type": "content_section",
+        "heading": "Schengen Vizesi İçin Tur Rezervasyonu Yeterli mi?",
+        "done": true
+      }
+    ]
+  }
+]
