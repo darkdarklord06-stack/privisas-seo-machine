@@ -30,7 +30,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install google-auth google-api-python-client python-dotenv
+          pip install google-auth google-api-python-client python-dotenv requests beautifulsoup4
 
       - name: Run Privisas SEO Rank Watch
         env:
@@ -39,7 +39,14 @@ jobs:
         run: |
           python data_sources/seo_rank_watch.py
 
-      - name: Save SEO measurement data
+      - name: Prepare SEO Content Gap Task
+        env:
+          GSC_SITE_URL: sc-domain:privisas.com
+          PYTHONPATH: .
+        run: |
+          python data_sources/seo_content_gap.py
+
+      - name: Save SEO data
         run: |
           git config user.name "Privisas SEO Agent"
           git config user.email "seo-agent@privisas.com"
@@ -48,6 +55,6 @@ jobs:
             echo "No SEO data changes to commit."
           else
             git add data/seo/
-            git commit -m "Update Privisas SEO rank measurements"
+            git commit -m "Update Privisas SEO Rank Watch data"
             git push
           fi
