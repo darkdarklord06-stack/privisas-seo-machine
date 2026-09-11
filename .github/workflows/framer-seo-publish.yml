@@ -1,0 +1,155 @@
+name: Privisas SEO Publish
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish-seo-change:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install Framer Server API
+        run: npm install framer-api
+
+      - name: Publish SEO change to Privisas
+        env:
+          FRAMER_API_KEY: ${{ secrets.FRAMER_API_KEY }}
+          FRAMER_PROJECT_URL: "https://framer.com/projects/privisas--IrajiSv3DxV6pCcGLk8v"
+        run: |
+          node --input-type=module <<'NODE'
+          import { connect } from "framer-api"
+
+          const framer = await connect(
+            process.env.FRAMER_PROJECT_URL,
+            process.env.FRAMER_API_KEY
+          )
+
+          try {
+            const changes = await framer.getChangedPaths()
+
+            console.log("Pending changes:")
+            console.log(JSON.stringify(changes, null, 2))
+
+            const result = await framer.publish()
+
+            console.log(`Published deployment: ${result.deployment.id}`)
+
+            const domains = await framer.deploy(
+              result.deployment.id
+            )
+
+            console.log("✅ Deployed to production")
+            console.log(JSON.stringify(domains, null, 2))
+          } finally {
+            await framer.disconnect()
+          }
+          NODE
+
+      - name: Start 7-day SEO observation
+        run: |
+          python - <<'PY'
+          import json
+          from datetime import date, timedelta
+          from pathlib import Path
+
+          seo = Path("data/seo")
+
+          watchwords_file = seo / "watchwords.json"
+          log_file = seo / "improvement-log.json"
+          task_file = seo / "content-gap-task.json"
+
+          watchwords = json.loads(
+              watchwords_file.read_text(encoding="utf-8")
+          )
+
+          logs = json.loads(
+              log_file.read_text(encoding="utf-8")
+          )
+
+          task = json.loads(
+              task_file.read_text(encoding="utf-8")
+          )
+
+          keyword = task["keyword"]
+          today = date.today()
+          next_review = today + timedelta(days=7)
+
+          for item in watchwords:
+              if item["keyword"] == keyword:
+                  item["status"] = "observing"
+                  item["nextReviewDate"] = next_review.isoformat()
+
+          already_logged = any(
+              item.get("keyword") == keyword
+              and item.get("actionDate") == today.isoformat()
+              for item in logs
+          )
+
+          if not already_logged:
+              logs.append({
+                  "keyword": keyword,
+                  "targetPath": task["targetPath"],
+                  "status": "observing",
+                  "actionDate": today.isoformat(),
+                  "nextReviewDate": next_review.isoformat(),
+                  "rankAtAction": task["gsc"]["position"],
+                  "impressionsAtAction": task["gsc"]["impressions"],
+                  "clicksAtAction": task["gsc"]["clicks"],
+                  "searchIntent": task["searchIntent"],
+                  "contentGap": task["contentGap"]["missingInformation"],
+                  "hypothesis": task["contentGap"]["hypothesis"],
+                  "actions": [
+                      {
+                          "type": "content_section",
+                          "heading": (
+                              "Schengen Vizesi İçin "
+                              "Tur Rezervasyonu Yeterli mi?"
+                          ),
+                          "done": True
+                      }
+                  ]
+              })
+
+          watchwords_file.write_text(
+              json.dumps(
+                  watchwords,
+                  ensure_ascii=False,
+                  indent=2
+              ) + "\n",
+              encoding="utf-8"
+          )
+
+          log_file.write_text(
+              json.dumps(
+                  logs,
+                  ensure_ascii=False,
+                  indent=2
+              ) + "\n",
+              encoding="utf-8"
+          )
+
+          print("✅ Keyword status: observing")
+          print(f"Next review: {next_review.isoformat()}")
+          PY
+
+      - name: Save SEO experiment
+        run: |
+          git config user.name "Privisas SEO Agent"
+          git config user.email "seo-agent@privisas.com"
+
+          git add data/seo/watchwords.json
+          git add data/seo/improvement-log.json
+
+          git commit -m "Start 7-day SEO observation"
+          git push
