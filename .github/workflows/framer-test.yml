@@ -1,0 +1,47 @@
+name: Privisas Framer Connection Test
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test-framer:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install Framer Server API
+        run: npm install framer-api
+
+      - name: Test Framer connection
+        env:
+          FRAMER_API_KEY: ${{ secrets.FRAMER_API_KEY }}
+          FRAMER_PROJECT_URL: ${{ vars.FRAMER_PROJECT_URL }}
+        run: |
+          node --input-type=module <<'NODE'
+          import { connect } from "framer-api"
+
+          const framer = await connect(
+            process.env.FRAMER_PROJECT_URL,
+            process.env.FRAMER_API_KEY
+          )
+
+          try {
+            const project = await framer.getProjectInfo()
+
+            console.log("✅ Framer connection successful")
+            console.log(`Project: ${project.name}`)
+            console.log(`Project ID: ${project.id}`)
+          } finally {
+            await framer.disconnect()
+          }
+          NODE
