@@ -1,0 +1,52 @@
+name: Privisas SEO Rank Watch
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  seo-rank-watch:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v3
+        with:
+          workload_identity_provider: projects/153968183926/locations/global/workloadIdentityPools/github-actions/providers/github-actions
+          service_account: privisas-seo-agent@privisas-seo-agent.iam.gserviceaccount.com
+          create_credentials_file: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install google-auth google-api-python-client python-dotenv
+
+      - name: Run Privisas SEO Rank Watch
+        env:
+          GSC_SITE_URL: sc-domain:privisas.com
+        run: |
+          python data_sources/seo_rank_watch.py
+
+      - name: Save SEO measurement data
+        run: |
+          git config user.name "Privisas SEO Agent"
+          git config user.email "seo-agent@privisas.com"
+
+          if git diff --quiet -- data/seo/; then
+            echo "No SEO data changes to commit."
+          else
+            git add data/seo/
+            git commit -m "Update Privisas SEO rank measurements"
+            git push
+          fi
