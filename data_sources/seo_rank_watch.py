@@ -473,3 +473,18 @@ def main():
 
     print("")
     print("NEXT STEP")
+    print("---------")
+    print(
+        "Analyze search intent, current SERP and Privisas content gap "
+        "before making any change."
+    )
+
+    print("")
+    print(
+        "The ranking impact of today's change is not yet known. "
+        "It will be evaluated using subsequent Google Search Console measurements."
+    )
+
+
+if __name__ == "__main__":
+    main()
