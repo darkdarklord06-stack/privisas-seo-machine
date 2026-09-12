@@ -28,5 +28,20 @@
     "clicks": 0,
     "ctr": 0,
     "positionChange": 0.0
+  },
+  {
+    "measurementDate": "2026-09-12",
+    "periodStart": "2026-08-13",
+    "periodEnd": "2026-09-09",
+    "periodDays": 28,
+    "source": "google_search_console",
+    "keyword": "schengen vizesi için tur rezervasyonu yeterli mi",
+    "targetPath": "/blog/schengen-vizesi-konaklama-kaniti-basvurunuzun-reddedilmemesi-icin-bilmeniz-gerekenler",
+    "status": "observing",
+    "position": 6.88,
+    "impressions": 8,
+    "clicks": 0,
+    "ctr": 0,
+    "positionChange": 0.0
   }
 ]
