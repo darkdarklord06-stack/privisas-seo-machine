@@ -2,7 +2,7 @@
   {
     "keyword": "schengen vizesi için tur rezervasyonu yeterli mi",
     "targetPath": "/blog/schengen-vizesi-konaklama-kaniti-basvurunuzun-reddedilmemesi-icin-bilmeniz-gerekenler",
-    "status": "observing",
+    "status": "no_effect",
     "actionDate": "2026-09-11",
     "nextReviewDate": "2026-09-18",
     "rankAtAction": 6.88,
@@ -24,6 +24,28 @@
         "heading": "Schengen Vizesi İçin Tur Rezervasyonu Yeterli mi?",
         "done": true
       }
-    ]
+    ],
+    "evaluation": {
+      "evaluatedDate": "2026-09-21",
+      "beforePeriod": {
+        "start": "2026-09-04",
+        "end": "2026-09-10",
+        "position": 0,
+        "impressions": 0,
+        "clicks": 0,
+        "ctr": 0
+      },
+      "afterPeriod": {
+        "start": "2026-09-12",
+        "end": "2026-09-18",
+        "position": 0,
+        "impressions": 0,
+        "clicks": 0,
+        "ctr": 0
+      },
+      "positionChange": 0,
+      "outcome": "no_effect",
+      "reason": "No sufficiently strong positive or negative change was measured in the 7-day comparison."
+    }
   }
 ]
