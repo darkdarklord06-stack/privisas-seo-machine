@@ -1,14 +1,14 @@
 {
-  "createdDate": "2026-10-04",
+  "createdDate": "2026-10-05",
   "status": "prepared_for_serp_research",
   "keyword": "schengen vizesi için tur rezervasyonu yeterli mi",
   "targetPath": "/blog/schengen-vizesi-konaklama-kaniti-basvurunuzun-reddedilmemesi-icin-bilmeniz-gerekenler",
   "gsc": {
-    "position": null,
-    "impressions": 0,
+    "position": 4,
+    "impressions": 3,
     "clicks": 0,
-    "selectionTier": 3,
-    "selectionReason": "Previously improved keyword is active again and has not achieved #1."
+    "selectionTier": 1,
+    "selectionReason": "Position 2–10 with impressions; closest opportunity to #1."
   },
   "searchIntent": {
     "type": "informational_decision",
