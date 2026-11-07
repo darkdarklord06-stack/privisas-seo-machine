@@ -47,5 +47,54 @@
       "outcome": "no_effect",
       "reason": "No sufficiently strong positive or negative change was measured in the 7-day comparison."
     }
+  },
+  {
+    "keyword": "schengen vizesi için tur rezervasyonu yeterli mi",
+    "targetPath": "/blog/schengen-vizesi-konaklama-kaniti-basvurunuzun-reddedilmemesi-icin-bilmeniz-gerekenler",
+    "status": "observing",
+    "actionDate": "2026-11-05",
+    "nextReviewDate": "2026-11-12",
+    "rankAtAction": 3.28,
+    "impressionsAtAction": 60,
+    "clicksAtAction": 0,
+    "hypothesis": "Position ~3 with 0 clicks suggests a snippet problem: the blog title template appended '- My Framer Site' and all posts shared the site-wide meta description. Fixing the snippet should raise CTR.",
+    "change": "Site-wide blog template: title '{{Title}} | Privisas', meta description '{{Intro}}', favicon added. Published 2026-11-06; page recrawled 2026-11-06.",
+    "note": "Template-level change affects all blog posts; evaluate CTR change on this keyword. Logged retroactively on 2026-11-07."
+  },
+  {
+    "keyword": "schengen vizesi için bankada ne kadar para olmalı 2026",
+    "targetPath": "/blog/schengen-vizesi-icin-finansal-kanit-rehberi-yeterli-gecim-kaynaklari-nasil-belgelenir",
+    "status": "observing",
+    "actionDate": "2026-11-07",
+    "nextReviewDate": "2026-11-14",
+    "rankAtAction": 6.4,
+    "impressionsAtAction": 11,
+    "clicksAtAction": 0,
+    "relatedQueries": [
+      {
+        "query": "schengen vizesi için hesapta ne kadar para olmalı 2026",
+        "position": 5.0,
+        "impressions": 5,
+        "clicks": 0
+      }
+    ],
+    "gscPeriod": [
+      "2026-10-09",
+      "2026-11-05"
+    ],
+    "searchIntent": {
+      "type": "informational_specific_amount",
+      "searcher": "Schengen başvurusu hazırlayan ve banka hesabında göstermesi gereken tutarı öğrenmek isteyen kullanıcı.",
+      "goal": "Gideceği ülke için 2026'da günlük/toplam kaç euro göstermesi gerektiğini somut rakamla öğrenmek."
+    },
+    "contentGap": [
+      "Competing results (Marina Vize, Sözsel, Vizekolay) give a country-by-country amount table; Privisas page only listed France and Spain.",
+      "No worked example of calculating the required amount for a trip length."
+    ],
+    "hypothesis": "Adding a complete 2026 country-by-country reference amount table based on the official European Commission list (08/06/2026) plus a worked example answers the specific-amount intent better than competitors and should improve position and CTR.",
+    "change": "Inserted section '2026 Ülke Ülke Schengen Referans Tutarları' (29 countries, official EC reference amounts table dated 08/06/2026), a worked example, and a link to the 90/180 calculator. Updated post date to 2026-11-07. Title and meta unchanged.",
+    "sources": [
+      "https://home-affairs.ec.europa.eu/document/download/9bf9a98f-3bd1-4e14-9b39-c9087a08a32f_en?filename=Reference_amounts_table.pdf"
+    ]
   }
 ]
