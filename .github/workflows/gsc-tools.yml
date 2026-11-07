@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       action:
-        description: "sitemap | inspect | performance"
+        description: "sitemap | inspect | performance | queries"
         required: true
         default: inspect
       urls:
